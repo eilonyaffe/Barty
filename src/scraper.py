@@ -91,9 +91,7 @@ def get_article_text(article_link):
 
 def extract_entities(article, keyword_list):
     content = f"{article.title} {article.summary} {article.text}".lower()
-    matched = [k for k in keyword_list if k.lower() in content]
-    article.entities = matched
-
+    return [k for k in keyword_list if k.lower() in content]
 
 all_articles = get_articles()
 print(f"number of articles found before filter: {len(all_articles)}")
@@ -106,6 +104,6 @@ with open("messages.json", "r", encoding="utf-8") as f:
 keyword_list = list(data.keys())
 
 for art in filtered_articles:
-    art.text = get_article_text(art.link)
-    extract_entities(art, keyword_list)
+    art.text = get_article_text(art.link)  # updates the text field
+    art.entities = extract_entities(art, keyword_list)  # updates the entities field
     print(art)
