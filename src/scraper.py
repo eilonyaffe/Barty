@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 import json
+import time
 
 
 class Article:
@@ -70,11 +71,16 @@ def filter_articles(articles, json_path="messages.json"):
 
 def get_article_text(article_link):
     try:
-        res = requests.get(article_link)
-        res.encoding = res.apparent_encoding
-        soup = BeautifulSoup(res.text, "lxml")
+        # TODO make a var in a config.py file, to be WAIT_SECS- can be configured by how long we allow to wait
+        for _ in range (100):  # sometimes get "503 Backend fetch failed" error upon retrieving the html 
+            time.sleep(1)
+            res = requests.get(article_link)
+            res.encoding = res.apparent_encoding
+            soup = BeautifulSoup(res.text, "lxml")
+            content_div = soup.find("div", class_="entry-content")
+            if content_div:
+                break
 
-        content_div = soup.find("div", class_="entry-content")
         if not content_div:
             print("No entry-content div found.")
             return ""
