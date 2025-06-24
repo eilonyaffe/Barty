@@ -3,6 +3,21 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import json
 import time
+import tiktoken
+
+from config import TOKENS, RETRIES, WAIT_SECS
+
+encoding = tiktoken.get_encoding("cl100k_base")
+
+
+def gemini_token_count(text):
+    return len(encoding.encode(text))
+
+
+def truncate_to_token_limit(text, max_tokens=TOKENS):
+    tokens = encoding.encode(text)
+    truncated = encoding.decode(tokens[:max_tokens])
+    return truncated
 
 
 class Article:
@@ -15,7 +30,7 @@ class Article:
         self.entities = []
 
     def __repr__(self):
-        return f"{self.title} \n{self.date} \n{self.link}\n{self.summary}\n{self.entities}\n"
+        return f"{self.title} \n{self.date} \n{self.link}\n{self.entities}\n{self.text}\n"
 
 
 def get_articles():
@@ -69,11 +84,10 @@ def filter_articles(articles, json_path="messages.json"):
         return []
 
 
-def get_article_text(article_link):
+def get_article_text(article_link, article_summary):
     try:
-        # TODO make a var in a config.py file, to be WAIT_SECS- can be configured by how long we allow to wait
-        for _ in range (100):  # sometimes get "503 Backend fetch failed" error upon retrieving the html 
-            time.sleep(1)
+        for _ in range (RETRIES):  # retries because sometimes gets "503 Backend fetch failed" error upon retrieving the html 
+            time.sleep(WAIT_SECS)
             res = requests.get(article_link)
             res.encoding = res.apparent_encoding
             soup = BeautifulSoup(res.text, "lxml")
@@ -86,9 +100,8 @@ def get_article_text(article_link):
             return ""
 
         paragraphs = content_div.find_all("p")
-        text = "\n\n".join(p.get_text(strip=True) for p in paragraphs)
-
-        return text
+        full_text = " ".join(p.get_text(strip=True) for p in paragraphs)
+        return truncate_to_token_limit(full_text)
 
     except Exception as e:
         print(f"Error in get_article_text: {e}")
@@ -98,6 +111,7 @@ def get_article_text(article_link):
 def extract_entities(article, keyword_list):
     content = f"{article.title} {article.summary} {article.text}".lower()
     return [k for k in keyword_list if k.lower() in content]
+
 
 all_articles = get_articles()
 print(f"number of articles found before filter: {len(all_articles)}")
@@ -110,6 +124,6 @@ with open("messages.json", "r", encoding="utf-8") as f:
 keyword_list = list(data.keys())
 
 for art in filtered_articles:
-    art.text = get_article_text(art.link)  # updates the text field
+    art.text = get_article_text(art.link, art.summary)  # updates the text field
     art.entities = extract_entities(art, keyword_list)  # updates the entities field
     print(art)
