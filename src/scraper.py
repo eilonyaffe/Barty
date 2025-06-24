@@ -9,11 +9,6 @@ from config import TOKENS, RETRIES, WAIT_SECS
 
 encoding = tiktoken.get_encoding("cl100k_base")
 
-
-def gemini_token_count(text):
-    return len(encoding.encode(text))
-
-
 def truncate_to_token_limit(text, max_tokens=TOKENS):
     tokens = encoding.encode(text)
     truncated = encoding.decode(tokens[:max_tokens])
