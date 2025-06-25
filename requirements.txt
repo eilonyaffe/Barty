@@ -4,3 +4,4 @@ chardet
 lxml
 tiktoken
 dspy
+flask

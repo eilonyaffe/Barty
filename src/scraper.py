@@ -90,8 +90,10 @@ def filter_articles(articles, json_path="messages.json"):
 
 
 def get_article_text(article_link):
-    try:
-        for _ in range (RETRIES):  # retries because sometimes gets "503 Backend fetch failed" error upon retrieving the html 
+    content_div = None  # declare outside loop
+
+    for _ in range (RETRIES):  # retries because sometimes gets "503 Backend fetch failed" error upon retrieving the html 
+        try:
             time.sleep(WAIT_SECS)
             res = requests.get(article_link)
             res.encoding = res.apparent_encoding
@@ -99,18 +101,18 @@ def get_article_text(article_link):
             content_div = soup.find("div", class_="entry-content")
             if content_div:
                 break
+        
+        except Exception as e:
+            print(f"Error in get_article_text: {e}")
+            continue
 
-        if not content_div:
-            print("No entry-content div found.")
-            return ""
-
-        paragraphs = content_div.find_all("p")
-        full_text = " ".join(p.get_text(strip=True) for p in paragraphs)
-        return truncate_to_token_limit(full_text)
-
-    except Exception as e:
-        print(f"Error in get_article_text: {e}")
+    if not content_div:
+        print("No entry-content div found.")
         return ""
+
+    paragraphs = content_div.find_all("p")
+    full_text = " ".join(p.get_text(strip=True) for p in paragraphs)
+    return truncate_to_token_limit(full_text)
 
 
 def extract_entities(article, keyword_list):
@@ -138,4 +140,5 @@ def prepare_articles():
         clean_articles.append(art)
         print(f"number of extracted articles: {len(clean_articles)}")
 
+    clean_articles.sort(key=lambda e: len(e.entities))  # sorting to first have articles with least entities. more trustworthy output
     return clean_articles

@@ -8,7 +8,7 @@ from config import TONE
 from scraper import Article
 
 load_dotenv()
-os.environ["GEMINI_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+os.environ["GEMINI_API_KEY"] = os.getenv("GOOGLE_API_KEY")  # 50 requests per day, free tier
 
 lm = dspy.LM(
     model="gemini/gemini-1.5-flash",
@@ -30,9 +30,15 @@ tone_labels = {
 class OpinionPrompt(dspy.Signature):
     text: str = InputField(desc="The article content")
     entities: list = InputField(desc="Entities mentioned in the article")
-    stance_mapping: dict = InputField(desc="Mapping of entities to stances (True = support, False = oppose)")
+    stance_mapping: dict = InputField(desc=(
+        "A mapping of entities to required stances: True means the opinion in the output must support the entity, "
+        "False means the opinion in the output must oppose it — regardless of the article's actual tone toward the entity."
+    ))
     tone: str = InputField(desc="The tone to use: neutral, general, heated, or humoristic")
-    opinion: str = OutputField(desc="A personal, expressive opinion reflecting all the stances")
+    opinion: str = OutputField(desc=(
+        "A personal, expressive opinion about the article. The opinion MUST strictly align with the stance_mapping, "
+        "even if the article expresses different sentiments. True means the opinion in the output must support the entity, "
+        "False means the opinion in the output must oppose it"))
 
 predictor = dspy.Predict(OpinionPrompt)
 

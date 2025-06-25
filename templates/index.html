@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Entity Bias Editor</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2em;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        form.inline {
+            display: inline;
+        }
+        input[type="text"] {
+            width: 70%;
+            padding: 4px;
+        }
+        button {
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Entity Bias Editor</h2>
+
+    <table>
+        <tr>
+            <th>Entity</th>
+            <th>Bias</th>
+            <th>Actions</th>
+        </tr>
+        {% for entity, bias in messages.items() %}
+        <tr>
+            <td>{{ entity }}</td>
+            <td>{{ 'Support' if bias == 'True' else 'Oppose' }}</td>
+            <td>
+                <form class="inline" method="POST" action="/toggle">
+                    <input type="hidden" name="entity" value="{{ entity }}">
+                    <button type="submit">Toggle</button>
+                </form>
+                <form class="inline" method="POST" action="/delete">
+                    <input type="hidden" name="entity" value="{{ entity }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Add New Entity</h3>
+    <form method="POST" action="/add">
+        <input type="text" name="entity" placeholder="Entity name" required>
+        <select name="bias">
+            <option value="True">Support</option>
+            <option value="False">Oppose</option>
+        </select>
+        <button type="submit">Add</button>
+    </form>
+</body>
+</html>
