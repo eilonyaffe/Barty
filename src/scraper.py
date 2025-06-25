@@ -5,7 +5,7 @@ import json
 import time
 import tiktoken
 
-from config import TOKENS, RETRIES, WAIT_SECS
+from config import TOKENS, RETRIES, WAIT_SECS, MAX_ARTICLES
 
 encoding = tiktoken.get_encoding("cl100k_base")
 
@@ -72,14 +72,24 @@ def filter_articles(articles, json_path="messages.json"):
             content = f"{article.title} {article.summary}".lower()  # check if a message is in the article
             return any(keyword in content for keyword in keywords)
 
-        return [article for article in articles if matches_keywords(article)]
+        matched = [article for article in articles if matches_keywords(article)]
+
+        #  sort by date, newest to oldest
+        matched = sorted(
+            [a for a in matched if a.date is not None],
+            key=lambda x: x.date,
+            reverse=True
+        )
+
+        # Truncate to top MAX_ARTICLES most recent
+        return matched[:MAX_ARTICLES]
 
     except Exception as e:
         print("Error in filter_articles:", e)
         return []
 
 
-def get_article_text(article_link, article_summary):
+def get_article_text(article_link):
     try:
         for _ in range (RETRIES):  # retries because sometimes gets "503 Backend fetch failed" error upon retrieving the html 
             time.sleep(WAIT_SECS)
@@ -108,17 +118,24 @@ def extract_entities(article, keyword_list):
     return [k for k in keyword_list if k.lower() in content]
 
 
-all_articles = get_articles()
-print(f"number of articles found before filter: {len(all_articles)}")
+def prepare_articles():  
+    all_articles = get_articles()
+    print(f"number of articles found before filter: {len(all_articles)}")
 
-filtered_articles = filter_articles(all_articles)
-print(f"number of articles found after filter: {len(filtered_articles)}")
+    filtered_articles = filter_articles(all_articles)
+    print(f"number of articles found after filter: {len(filtered_articles)}")
 
-with open("messages.json", "r", encoding="utf-8") as f:
-    data = json.load(f)
-keyword_list = list(data.keys())
+    with open("messages.json", "r", encoding="utf-8") as f:
+        data = json.load(f)
+    keyword_list = list(data.keys())
 
-for art in filtered_articles:
-    art.text = get_article_text(art.link, art.summary)  # updates the text field
-    art.entities = extract_entities(art, keyword_list)  # updates the entities field
-    print(art)
+    clean_articles = []
+    for art in filtered_articles:
+        art.text = get_article_text(art.link)  # updated: removed second arg
+        if not art.text.strip():
+            continue  # skip articles with no content_div
+        art.entities = extract_entities(art, keyword_list)
+        clean_articles.append(art)
+        print(len(clean_articles))
+
+    return clean_articles

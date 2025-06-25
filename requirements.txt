@@ -3,3 +3,4 @@ beautifulsoup4
 chardet
 lxml
 tiktoken
+dspy
