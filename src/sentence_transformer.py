@@ -8,7 +8,7 @@ from config import TONE
 from scraper import Article
 
 load_dotenv()
-os.environ["GEMINI_API_KEY"] = os.getenv("GOOGLE_API_KEY")  # for LiteLLM/DSPy
+os.environ["GEMINI_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
 lm = dspy.LM(
     model="gemini/gemini-1.5-flash",
@@ -20,13 +20,19 @@ lm = dspy.LM(
 
 dspy.settings.configure(lm=lm)
 
+tone_labels = {
+    1: "neutral",
+    2: "general opinion",
+    3: "heated opinion",
+    4: "humoristic opinion"
+}
 
 class OpinionPrompt(dspy.Signature):
     text: str = InputField(desc="The article content")
     entities: list = InputField(desc="Entities mentioned in the article")
-    stance_mapping: dict = InputField(desc="Entity stances to reflect in your opinion (e.g. {'Israel': True})")
+    stance_mapping: dict = InputField(desc="Mapping of entities to stances (True = support, False = oppose)")
     tone: str = InputField(desc="The tone to use: neutral, general, heated, or humoristic")
-    opinion: str = OutputField(desc="A personal, expressive opinion reflecting the stances")
+    opinion: str = OutputField(desc="A personal, expressive opinion reflecting all the stances")
 
 predictor = dspy.Predict(OpinionPrompt)
 
@@ -40,13 +46,6 @@ def generate_opinion(article: Article, messages_json_path: str = "messages.json"
     if not article.text.strip():
         return "[No article text to evaluate.]"
 
-    # tone label based on TONE constant
-    tone_labels = {
-        1: "neutral",
-        2: "general opinion",
-        3: "heated opinion",
-        4: "humoristic opinion"
-    }
     tone = tone_labels.get(TONE)
 
     result = predictor(

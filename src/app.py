@@ -2,7 +2,6 @@ from scraper import prepare_articles
 from sentence_transformer import generate_opinion
 import time
 
-from config import MAX_ARTICLES
 
 def main():
     articles = prepare_articles()

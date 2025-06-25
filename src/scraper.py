@@ -26,7 +26,7 @@ class Article:
 
     def __repr__(self):
         return f"{self.title} \n{self.date} \n{self.link}\n{self.entities}\n{self.text}\n"
-
+    
 
 def get_articles():
     try:
@@ -136,6 +136,6 @@ def prepare_articles():
             continue  # skip articles with no content_div
         art.entities = extract_entities(art, keyword_list)
         clean_articles.append(art)
-        print(len(clean_articles))
+        print(f"number of extracted articles: {len(clean_articles)}")
 
     return clean_articles
