@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, redirect
 import json
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), "../templates"))
+
 MSG_PATH = "messages.json"
 
 def load_messages():
@@ -15,7 +17,7 @@ def save_messages(messages):
 @app.route("/")
 def index():
     messages = load_messages()
-    return render_template("index.html", messages=messages)
+    return render_template("messages.html", messages=messages)
 
 @app.route("/toggle", methods=["POST"])
 def toggle():

@@ -2,10 +2,11 @@
     "Israel": "True",
     "Trump": "True",
     "US army": "True",
-    "Elon Musk": "False",
+    "Elon Musk": "True",
     "Gavin Newsom": "False",
     "immigrant": "False",
     "Iran": "False",
     "Joe Biden": "True",
-    "Ukraine": "False"
+    "Ukraine": "True",
+    "aoc": "False"
 }
