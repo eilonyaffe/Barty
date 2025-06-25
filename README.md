@@ -1,5 +1,6 @@
-# Barty: an article opinion generator, designed to be a high-end, self-sufficient, inauthentic user
+# Barty: an article opinion generation bot
 
+Barty is designed to be a high-end, self-sufficient, inauthentic user to serve as a part of an influence campaign.
 This project scrapes political articles from [Breitbart](https://www.breitbart.com/politics/), filters them based on relevant entities, and uses the Gemini 1.5 Flash language model (via DSPy) to generate expressive opinions about the articles. The tone and stance toward each entity are customizable.
 
 ---
