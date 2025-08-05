@@ -46,8 +46,3 @@ This project is licensed under the [MIT License](LICENSE).
 Use in actual influence or disinformation campaigns is **strictly prohibited**.
 
 ---
-
-## 🧠 Footer
-
-This project was created to explore the capabilities and potential dangers of AI in political discourse.  
-Barty is a thought experiment, not a tool for real-world application.
