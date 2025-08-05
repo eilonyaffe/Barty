@@ -1,17 +1,53 @@
 # Barty: an article opinion generation bot
 
-Barty is designed to be a high-end, self-sufficient, inauthentic user to serve as a part of an American influence campaign.
+> 🚨 **DISCLAIMER**  
+> This project is for **learning and research purposes only**.  
+> It is **not used** in any real influence campaign, nor does it generate or publish content to any external platform.  
+> All outputs remain local and are produced solely for the purpose of studying the potential implications of language model usage in political contexts.
 
-This project scrapes political articles from [Breitbart](https://www.breitbart.com/politics/), filters them based on relevant entities, and uses the Gemini 1.5 Flash language model (via DSPy) to generate expressive opinions about the articles. The tone and stance toward each entity are customizable.
+---
+
+Barty is a theoretical prototype that explores how large language models (LLMs) might be used to generate expressive opinions on political content. It scrapes recent political articles from [Breitbart](https://www.breitbart.com/politics/), filters them based on specified entities, and uses the Gemini 1.5 Flash model via DSPy to generate commentary.
 
 ---
 
-## Features
+## 🔍 Features
 
-- **Web Scraping**: Automatically fetches and parses recent political articles.
-- **Entity Filtering**: Selects articles containing specific keywords/entities listed in `messages.json`.
-- **Text Truncation**: Limits article content to a token threshold for optimal LLM input.
-- **Opinion Generation**: Produces LLM-driven commentary in one of four configurable tones (neutral, general, heated, humoristic) using Gemini Flash via DSPy.
-- **Stance Control**: Aligns opinions with a pre-defined stance toward each entity (`True = support`, `False = oppose`).
+- **Web Scraping**: Gathers recent political articles from Breitbart.
+- **Entity Filtering**: Keeps only articles mentioning keywords from `messages.json`.
+- **Text Truncation**: Keeps article content within token limits for LLMs.
+- **Opinion Generation**: Produces commentary in configurable tones (neutral, general, heated, or humoristic).
+- **Stance Control**: Aligns opinions with a defined stance for each entity (`True = support`, `False = oppose`).
 
 ---
+
+## 🛠️ Tech Stack
+- **Python**
+- **DSPy** for prompt abstraction
+- **Gemini 1.5 Flash** for opinion generation
+- **BeautifulSoup + Requests** for web scraping
+- **tiktoken** for token-aware truncation
+
+---
+
+
+## ⚠️ Ethics and Usage
+
+This repository **must not** be used to build or participate in any disinformation campaign.  
+It is a sandbox for testing, evaluating, and reflecting on the ethical implications of AI-generated political content.
+
+If you are considering using this code beyond personal research or learning, please consider the consequences and consult with appropriate legal and ethical guidelines.
+
+---
+
+## 📜 License
+
+This project is licensed under the [MIT License](LICENSE).  
+Use in actual influence or disinformation campaigns is **strictly prohibited**.
+
+---
+
+## 🧠 Footer
+
+This project was created to explore the capabilities and potential dangers of AI in political discourse.  
+Barty is a thought experiment, not a tool for real-world application.
