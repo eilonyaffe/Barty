@@ -1,6 +1,6 @@
 # Barty: an article opinion generation bot
 
-> 🚨 **DISCLAIMER**  
+> **DISCLAIMER**  
 > This project is for **learning and research purposes only**.  
 > It is **not used** in any real influence campaign, nor does it generate or publish content to any external platform.  
 > All outputs remain local and are produced solely for the purpose of studying the potential implications of language model usage in political contexts.
@@ -11,7 +11,7 @@ Barty is a theoretical prototype that explores how large language models (LLMs) 
 
 ---
 
-## 🔍 Features
+## Features
 
 - **Web Scraping**: Gathers recent political articles from Breitbart.
 - **Entity Filtering**: Keeps only articles mentioning keywords from `messages.json`.
@@ -21,7 +21,7 @@ Barty is a theoretical prototype that explores how large language models (LLMs) 
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 - **Python**
 - **DSPy** for prompt abstraction
 - **Gemini 1.5 Flash** for opinion generation
@@ -31,7 +31,7 @@ Barty is a theoretical prototype that explores how large language models (LLMs) 
 ---
 
 
-## ⚠️ Ethics and Usage
+## Ethics and Usage
 
 This repository **must not** be used to build or participate in any disinformation campaign.  
 It is a sandbox for testing, evaluating, and reflecting on the ethical implications of AI-generated political content.
@@ -40,7 +40,7 @@ If you are considering using this code beyond personal research or learning, ple
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the [MIT License](LICENSE).  
 Use in actual influence or disinformation campaigns is **strictly prohibited**.
