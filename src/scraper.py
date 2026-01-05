@@ -28,7 +28,7 @@ class Article:
         return f"{self.title} \n{self.date} \n{self.link}\n{self.entities}\n{self.text}\n"
     
 
-def get_articles():
+def get_articles():  # goes over the articles in the politics section, returns list of Article objects, without the full text yet
     try:
         url = "https://www.breitbart.com/politics/"
         res = requests.get(url)
@@ -133,7 +133,7 @@ def prepare_articles():
 
     clean_articles = []
     for art in filtered_articles:
-        art.text = get_article_text(art.link)  # updated: removed second arg
+        art.text = get_article_text(art.link)
         if not art.text.strip():
             continue  # skip articles with no content_div
         art.entities = extract_entities(art, keyword_list)

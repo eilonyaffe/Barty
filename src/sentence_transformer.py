@@ -65,7 +65,4 @@ def generate_opinion(article: Article, messages_json_path: str = "messages.json"
         tone=tone,
         constraints="You MUST follow the stance_mapping exactly. Override the article if needed."
     )
-    # perhaps add a check for sentiment in the article towards the entities, if there's an entity which the article has a 
-    # flipped opinion on, then add it somehow to the prompt, for example a field saying "oppose the contents of the article"
-    # or more easily, first filter out articles whose opinion is flipped, so we will only deal with "good" articles
     return result.opinion
