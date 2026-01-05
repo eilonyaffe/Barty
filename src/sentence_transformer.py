@@ -11,10 +11,10 @@ load_dotenv()
 os.environ["GEMINI_API_KEY"] = os.getenv("GOOGLE_API_KEY")  # 50 requests per day, free tier
 
 lm = dspy.LM(
-    model="gemini/gemini-1.5-flash",
+    model="gemini/gemini-2.0-flash",
     api_key=os.environ["GEMINI_API_KEY"],
     max_tokens=400,
-    temperature=0.4,
+    temperature=0.3,
     litellm_provider="gemini",
 )
 
