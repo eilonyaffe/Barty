@@ -60,7 +60,7 @@ def get_articles():  # goes over the articles in the politics section, returns l
         return articles
 
     except Exception as e:
-        print("Error in get_articles:", e)
+        logger.exception("Error in get_articles")
         return [], False
 
 

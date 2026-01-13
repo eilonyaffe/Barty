@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 import json 
 
-from config import TONE
+from config import get_tone
 from scraper import Article
 
 load_dotenv()
@@ -56,7 +56,7 @@ def generate_opinion(article: Article, messages_json_path: str = "messages.json"
     if not article.text.strip():
         return "[No article text to evaluate.]"
 
-    tone = tone_labels.get(TONE)
+    tone = tone_labels.get(get_tone())
 
     result = predictor(
         text=article.text,

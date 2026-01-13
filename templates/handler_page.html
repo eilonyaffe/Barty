@@ -31,8 +31,21 @@
     </style>
 </head>
 <body>
-    <h2>Entity Bias Editor</h2>
+    <h2>Opinion Tone</h2>
+    <form method="POST" action="/tone">
+    <select name="tone">
+        {% for k, label in tone_labels.items() %}
+        <option value="{{ k }}" {% if k == current_tone %}selected{% endif %}>
+            {{ k }} — {{ label }}
+        </option>
+        {% endfor %}
+    </select>
+    <button type="submit">Save Tone</button>
+    </form>
 
+    <hr>
+
+    <h2>Entity Bias Editor</h2>
     <table>
         <tr>
             <th>Entity</th>
