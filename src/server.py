@@ -17,7 +17,7 @@ def save_messages(messages):
 @app.route("/")
 def index():
     messages = load_messages()
-    return render_template("messages.html", messages=messages)
+    return render_template("handler_page.html", messages=messages)
 
 @app.route("/toggle", methods=["POST"])
 def toggle():

@@ -6,7 +6,9 @@ import time
 import tiktoken
 
 from config import TOKENS, RETRIES, WAIT_SECS, MAX_ARTICLES
+from logger import get_logger
 
+logger = get_logger(__name__)
 encoding = tiktoken.get_encoding("cl100k_base")
 
 def truncate_to_token_limit(text, max_tokens=TOKENS):
@@ -85,7 +87,7 @@ def filter_articles(articles, json_path="messages.json"):
         return matched[:MAX_ARTICLES]
 
     except Exception as e:
-        print("Error in filter_articles:", e)
+        logger.info("Error in filter_articles")
         return []
 
 
@@ -103,11 +105,11 @@ def get_article_text(article_link):
                 break
         
         except Exception as e:
-            print(f"Error in get_article_text: {e}")
+            logger.info(f"Error in get_article_text")
             continue
 
     if not content_div:
-        print("No entry-content div found.")
+        logger.info("No entry-content div found.")
         return ""
 
     paragraphs = content_div.find_all("p")
@@ -122,10 +124,10 @@ def extract_entities(article, keyword_list):
 
 def prepare_articles():  
     all_articles = get_articles()
-    print(f"number of articles found before filter: {len(all_articles)}")
+    logger.info("number of articles found before filter: %d",len(all_articles))
 
     filtered_articles = filter_articles(all_articles)
-    print(f"number of articles found after filter: {len(filtered_articles)}")
+    logger.info("number of articles found after filter: %d", len(filtered_articles))
 
     with open("messages.json", "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -138,7 +140,7 @@ def prepare_articles():
             continue  # skip articles with no content_div
         art.entities = extract_entities(art, keyword_list)
         clean_articles.append(art)
-        print(f"number of extracted articles: {len(clean_articles)}")
+        logger.info("number of extracted articles: %d", len(clean_articles))
 
     clean_articles.sort(key=lambda e: len(e.entities))  # sorting to first have articles with least entities. more trustworthy output
     return clean_articles

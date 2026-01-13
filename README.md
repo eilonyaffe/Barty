@@ -7,7 +7,7 @@
 
 ---
 
-Barty is a theoretical prototype that explores how large language models (LLMs) might be used to generate expressive opinions on political content. It scrapes recent political articles from [Breitbart](https://www.breitbart.com/politics/), filters them based on specified entities, and uses the Gemini 1.5 Flash model via DSPy to generate commentary.
+Barty is a theoretical prototype that explores how large language models (LLMs) might be used to generate expressive opinions on political content. It scrapes recent political articles from [Breitbart](https://www.breitbart.com/politics/), filters them based on specified entities, and uses the Gemini 2.0 Flash model via DSPy to generate commentary.
 
 ---
 
@@ -24,7 +24,7 @@ Barty is a theoretical prototype that explores how large language models (LLMs) 
 ## Tech Stack
 - **Python**
 - **DSPy** for prompt abstraction
-- **Gemini 1.5 Flash** for opinion generation
+- **Gemini 2.0 Flash** for opinion generation
 - **BeautifulSoup + Requests** for web scraping
 - **tiktoken** for token-aware truncation
 
