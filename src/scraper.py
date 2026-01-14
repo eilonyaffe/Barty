@@ -11,9 +11,9 @@ from logger import get_logger
 logger = get_logger(__name__)
 encoding = tiktoken.get_encoding("cl100k_base")
 
-def truncate_to_token_limit(text, max_tokens=TOKENS):
-    tokens = encoding.encode(text)
-    truncated = encoding.decode(tokens[:max_tokens])
+def truncate_to_token_limit(text, max_tokens=TOKENS)->str:
+    tokens:list[int] = encoding.encode(text)
+    truncated:str = encoding.decode(tokens[:max_tokens])
     return truncated
 
 
@@ -30,19 +30,19 @@ class Article:
         return f"{self.title} \n{self.date} \n{self.link}\n{self.entities}\n{self.text}\n"
     
 
-def get_articles():  # goes over the articles in the politics section, returns list of Article objects, without the full text yet
+def get_articles()->list[Article]:  # goes over the articles in the politics section, returns list of Article objects, without the full text yet
     try:
-        url = "https://www.breitbart.com/politics/"
+        url:str = "https://www.breitbart.com/politics/"
         res = requests.get(url)
         res.encoding = res.apparent_encoding
         soup = BeautifulSoup(res.text, "lxml")
 
-        articles = []
+        articles:list = []
 
         for article_tag in soup.find_all("article"):
             try:
                 title_tag = article_tag.find("h2").find("a")
-                title = title_tag.get_text(strip=True)
+                title:str = title_tag.get_text(strip=True)
                 link = title_tag["href"]  # <h2><a href=
 
                 time_tag = article_tag.find("time")
@@ -50,7 +50,7 @@ def get_articles():  # goes over the articles in the politics section, returns l
                 date = datetime.fromisoformat(date_str.replace("Z", "+00:00")) if date_str else None
 
                 summary_tag = article_tag.find("div", class_="excerpt")  # <div class="excerpt">
-                summary = summary_tag.get_text(strip=True) if summary_tag else ""
+                summary:str = summary_tag.get_text(strip=True) if summary_tag else ""
 
                 articles.append(Article(title, date, link, summary, text=None))
 
@@ -61,29 +61,29 @@ def get_articles():  # goes over the articles in the politics section, returns l
 
     except Exception as e:
         logger.exception("Error in get_articles")
-        return [], False
+        return []
 
 
-def filter_articles(articles, json_path="messages.json"):
+def filter_articles(articles:list[Article], json_path="messages.json")->list[Article]:
     try:
         with open(json_path, "r", encoding="utf-8") as f:
             data = json.load(f)
         keywords = [k.lower() for k in data.keys()]  # the messages strings
 
-        def matches_keywords(article):
-            content = f"{article.title} {article.summary}".lower()  # check if a message is in the article
+        def matches_keywords(article:Article)->bool:
+            content:str = f"{article.title} {article.summary}".lower()  # check if a message is in the article
             return any(keyword in content for keyword in keywords)
 
-        matched = [article for article in articles if matches_keywords(article)]
+        matched:list[Article] = [article for article in articles if matches_keywords(article)]
 
         #  sort by date, newest to oldest
-        matched = sorted(
+        matched:list[Article] = sorted(
             [a for a in matched if a.date is not None],
             key=lambda x: x.date,
             reverse=True
         )
 
-        # Truncate to top MAX_ARTICLES most recent
+        # Truncate to top MAX_ARTICLES most recent articles
         return matched[:MAX_ARTICLES]
 
     except Exception as e:
@@ -91,7 +91,7 @@ def filter_articles(articles, json_path="messages.json"):
         return []
 
 
-def get_article_text(article_link):
+def get_article_text(article_link:str)->str:
     content_div = None  # declare outside loop
 
     for _ in range (RETRIES):  # retries because sometimes gets "503 Backend fetch failed" error upon retrieving the html 
@@ -113,20 +113,20 @@ def get_article_text(article_link):
         return ""
 
     paragraphs = content_div.find_all("p")
-    full_text = " ".join(p.get_text(strip=True) for p in paragraphs)
+    full_text:str = " ".join(p.get_text(strip=True) for p in paragraphs)
     return truncate_to_token_limit(full_text)
 
 
-def extract_entities(article, keyword_list):
-    content = f"{article.title} {article.summary} {article.text}".lower()
+def extract_entities(article: Article, keyword_list: list[str]) -> list[str]:
+    content:str = f"{article.title} {article.summary} {article.text}".lower()
     return [k for k in keyword_list if k.lower() in content]
 
 
-def prepare_articles():  
-    all_articles = get_articles()
+def prepare_articles()->list[Article]:  
+    all_articles:list[Article] = get_articles()
     logger.info("number of articles found before filter: %d",len(all_articles))
 
-    filtered_articles = filter_articles(all_articles)
+    filtered_articles:list[Article] = filter_articles(all_articles)
     logger.info("number of articles found after filter: %d", len(filtered_articles))
 
     with open("messages.json", "r", encoding="utf-8") as f:

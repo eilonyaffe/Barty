@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 import json
 import os
+from typing import Dict
 
 from logger import get_file_logger
 from config import get_tone, set_tone
@@ -10,7 +11,7 @@ app.secret_key = os.getenv("SECRET_KEY")
 
 MSG_PATH = "messages.json"
 
-TONE_LABELS = {
+TONE_LABELS:dict[int,str] = {
     1: "neutral",
     2: "general opinion",
     3: "heated opinion",
@@ -23,17 +24,17 @@ user_logger = get_file_logger(
     fmt="%(asctime)s | %(message)s"
 )
 
-def log_user_action(action: str, **fields):
+def log_user_action(action: str, **fields)->None:
     ip = request.headers.get("X-Forwarded-For", request.remote_addr)
     ua = request.headers.get("User-Agent", "-")
     extras = " ".join(f"{k}={repr(v)}" for k, v in fields.items())
     user_logger.info("%s | ip=%s | ua=%s | %s", action, ip, ua, extras)
 
-def load_messages():
+def load_messages()->Dict[str, str]:
     with open(MSG_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
-def save_messages(messages):
+def save_messages(messages: Dict[str, str]) -> None:
     with open(MSG_PATH, "w", encoding="utf-8") as f:
         json.dump(messages, f, indent=4)
 

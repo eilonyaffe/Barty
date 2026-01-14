@@ -6,12 +6,12 @@ RETRIES = 30  # sometimes fetch requests for the various links fails. this contr
 TOKENS = 300  # how many tokens we take from each article, to be later fed as input to the LLM
 MAX_ARTICLES = 15  # maximum amount of filtered articles we feed into the LLM (say each day in production)
 
-DEFAULT_TONE = 3  # 1 neutral, 2 general, 3 heated, 4 humoristic
+DEFAULT_TONE = 2  # 1 neutral, 2 general, 3 heated, 4 humoristic
 
 _SETTINGS_PATH = Path("data") / "settings.json"
 
-def get_tone():
-    try:
+def get_tone()->int:
+    try: # safely getting the tone field
         if _SETTINGS_PATH.exists():
             data = json.loads(_SETTINGS_PATH.read_text(encoding="utf-8"))
             tone = int(data.get("tone", DEFAULT_TONE))

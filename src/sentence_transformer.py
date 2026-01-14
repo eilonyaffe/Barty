@@ -20,7 +20,7 @@ lm = dspy.LM(
 
 dspy.settings.configure(lm=lm)
 
-tone_labels = {
+tone_labels:dict[int,str] = {
     1: "neutral",
     2: "general opinion",
     3: "heated opinion",
