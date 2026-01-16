@@ -5,7 +5,7 @@ WAIT_SECS = 1  # how many seconds we wait between retries
 RETRIES = 30  # sometimes fetch requests for the various links fails. this controls how many retries
 TOKENS = 300  # how many tokens we take from each article, to be later fed as input to the LLM
 MAX_ARTICLES = 15  # maximum amount of filtered articles we feed into the LLM (say each day in production)
-
+TEMPERATURE = 0.3  #  decides how deterministic (close to zero) or creative (close to 1) the llm will be
 DEFAULT_TONE = 2  # 1 neutral, 2 general, 3 heated, 4 humoristic
 
 _SETTINGS_PATH = Path("data") / "settings.json"

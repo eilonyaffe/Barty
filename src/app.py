@@ -17,6 +17,7 @@ def article_to_dict(article:Article, opinion:str)-> Dict[str, Any]:
         "link": article.link,
         "entities": article.entities,
         "opinion": opinion,
+        "alignment_score": article.alignment_score,  # NEW
     }
 
 

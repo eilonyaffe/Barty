@@ -25,6 +25,7 @@ class Article:
         self.summary = summary
         self.text = text or ""
         self.entities = []
+        self.alignment_score: int | None = None
 
     def __repr__(self):
         return f"{self.title} \n{self.date} \n{self.link}\n{self.entities}\n{self.text}\n"
